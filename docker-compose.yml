@@ -5,5 +5,7 @@ services:
     volumes:
       - ./.data:/usr/app/scrapped_data
     restart: always
+    environment:
+      TZ: 'Asia/Calcutta'
 
     
