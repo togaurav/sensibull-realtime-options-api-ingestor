@@ -50,10 +50,7 @@ expiries.forEach((expiry) => {
             , "uniqueId": ""
         };
 
-        message = JSON.stringify(message);
-        // console.log(message);
-        // Send a message to the server after connecting
-        // ws.send(message);
+
 
 
         // Debug
@@ -65,16 +62,10 @@ expiries.forEach((expiry) => {
         msg = JSON.stringify(msg);
         ws.send(msg);
 
-        msg = { "msgCommand": "subscribe", "dataSource": "quote-binary", "brokerId": 1, "tokens": scrips, "underlyingExpiry": [], "uniqueId": "" };
-        // console.log(msg);
-
-        msg = JSON.stringify(msg);
-
-        ws.send(msg);
 
 
-        // 
-        ws.send(message);
+
+
 
 
     });
@@ -82,7 +73,7 @@ expiries.forEach((expiry) => {
     ws.on('message', (data) => {
         // console.log(`Received: ${data}`);
         let message = lib.decodeData(data);
-        // console.log(message)
+        console.log(message)
         lib.print(message)
 
     });

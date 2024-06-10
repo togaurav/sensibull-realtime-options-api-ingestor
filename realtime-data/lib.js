@@ -856,13 +856,17 @@ if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir);
 }
 
+const rabbitmq = require('./rabbitmq.js');
+
 function print(data) {
     // console.log(JSON.stringify(data, null, 4));
 
 
     const jsonObject = data;
-    if (data.token)
-        fs.appendFileSync(`${dir}/${data.token}:${data.expiry}.json`, '\r\n' + JSON.stringify(jsonObject));
+    if (data.token) {
+        //fs.appendFileSync(`${dir}/${data.token}:${data.expiry}.json`, '\r\n' + JSON.stringify(jsonObject));
+        rabbitmq.sendData(jsonObject)
+    }
 
 
 
