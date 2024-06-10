@@ -41,7 +41,9 @@ async function sendData(data) {
 
     try {
         // Publish message to exchange
-        await channel.publish(exchangeName, queueName, Buffer.from(JSON.stringify(data)));
+        jsonObject= JSON.stringify(data);
+        jsonObject["data_received_at"] = new Date().getTime();
+        await channel.publish(exchangeName, queueName, Buffer.from(jsonObject));
         console.log("Message sent successfully");
     } catch (error) {
         console.error('Error sending message:', error);

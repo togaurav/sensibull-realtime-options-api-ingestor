@@ -1,3 +1,13 @@
+let currentTime = new Date();
+let startTradingTime = new Date();
+startTradingTime.setHours(9, 0, 0); // Set start time to 9:00 AM
+let endTradingTime = new Date();
+endTradingTime.setHours(15, 30, 0); // Set end time to 3:30 PM
+if (currentTime < startTradingTime || currentTime > endTradingTime) {
+    console.log("Non trading time :" + currentTime)
+    return;
+}
+
 
 
 const WebSocket = require('ws');

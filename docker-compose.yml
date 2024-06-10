@@ -4,5 +4,6 @@ services:
     build: ./realtime-data
     volumes:
       - ./.data:/usr/app/scrapped_data
+    restart: always
 
     
