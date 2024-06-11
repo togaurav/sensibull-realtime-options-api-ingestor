@@ -1,5 +1,5 @@
 const amqp = require("amqplib");
-
+const moment = require('moment-timezone');
 let channel, connection;
 
 const username = 'closefriend';
@@ -46,9 +46,9 @@ async function sendData(data) {
         // Parse JSON string to object
         let jsonObject = JSON.parse(JSON.stringify(data));
         // Add property to object
-        let date = new Date();
+        let date = moment.tz('Asia/Kolkata').format('YYYY-MM-DD HH:mm:ss');
         console.log("data_received_at : " + date);
-        jsonObject["data_received_at"] = date.getTime();
+        jsonObject["data_received_at"] = date;
         // Convert back to JSON string
         let jsonData = JSON.stringify(jsonObject);
         // Publish message to exchange
