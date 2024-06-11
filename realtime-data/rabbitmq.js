@@ -4,7 +4,7 @@ let channel, connection;
 
 const username = 'closefriend';
 const password = 'closefriend@2021';
-const host = '10.211.55.2';
+const host = '192.168.5.51';
 const exchangeName = 'rnd';
 const queueName = 'sensibull';
 
