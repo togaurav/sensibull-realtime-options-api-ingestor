@@ -8,8 +8,21 @@ if (currentTime < startTradingTime || currentTime > endTradingTime) {
     return;
 }
 
-const rabbitmq = require('./rabbitmq.js');
-rabbitmq.setup();
+console.log("Connecting to rabbitmq")
+const { setup, sendData } = require('./rabbitmq.js');
+
+async function call_rabbitmq_setup() {
+    const isConnected = await setup();
+    if (isConnected) {
+        // Proceed with further execution
+    } else {
+        // Handle setup failure
+        console.error('Failed to connect to RabbitMQ. Exiting...');
+        process.exit(1);
+    }
+}
+
+call_rabbitmq_setup();
 
 const WebSocket = require('ws');
 const lib = require('./lib.js');

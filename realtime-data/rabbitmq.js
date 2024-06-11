@@ -21,8 +21,10 @@ async function setup() {
         // Bind queue to exchange
         await channel.bindQueue(queueName, exchangeName, queueName);
         console.log("Connected to RabbitMQ and setup complete");
+        return true; // Indicate successful setup
     } catch (error) {
         console.error('Error connecting to RabbitMQ:', error);
+        return false; // Indicate setup failure
     }
 
     // Handle connection closure
@@ -32,6 +34,7 @@ async function setup() {
     });
 }
 
+
 async function sendData(data) {
     // Check if the channel is defined
     if (!channel) {
@@ -40,15 +43,20 @@ async function sendData(data) {
     }
 
     try {
-        // Publish message to exchange
-        jsonObject= JSON.stringify(data);
+        // Parse JSON string to object
+        let jsonObject = JSON.parse(JSON.stringify(data));
+        // Add property to object
         jsonObject["data_received_at"] = new Date().getTime();
-        await channel.publish(exchangeName, queueName, Buffer.from(jsonObject));
+        // Convert back to JSON string
+        let jsonData = JSON.stringify(jsonObject);
+        // Publish message to exchange
+        await channel.publish(exchangeName, queueName, Buffer.from(jsonData));
         console.log("Message sent successfully");
     } catch (error) {
         console.error('Error sending message:', error);
     }
 }
+
 
 function closeConnection() {
     if (connection) {
