@@ -46,7 +46,9 @@ async function sendData(data) {
         // Parse JSON string to object
         let jsonObject = JSON.parse(JSON.stringify(data));
         // Add property to object
-        jsonObject["data_received_at"] = new Date().getTime();
+        let date = new Date();
+        console.log("data_received_at : " + date);
+        jsonObject["data_received_at"] = date.getTime();
         // Convert back to JSON string
         let jsonData = JSON.stringify(jsonObject);
         // Publish message to exchange
