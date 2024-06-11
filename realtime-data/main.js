@@ -8,7 +8,8 @@ if (currentTime < startTradingTime || currentTime > endTradingTime) {
     return;
 }
 
-
+const rabbitmq = require('./rabbitmq.js');
+rabbitmq.setup();
 
 const WebSocket = require('ws');
 const lib = require('./lib.js');

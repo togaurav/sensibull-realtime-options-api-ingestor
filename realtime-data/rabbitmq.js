@@ -75,9 +75,8 @@ process.on('uncaughtException', (err) => {
     process.exit(1);
 });
 
-setup();
 
 module.exports = {
-
+    setup,
     sendData
 };
