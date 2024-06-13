@@ -6,7 +6,7 @@ x-defaults: &default-app
     driver: "json-file"
     options:
       max-size: "2M"
-  restart: "always"
+  restart: "unless-stopped"
   deploy:
     resources:
       limits:
