@@ -104,10 +104,12 @@ expiries.forEach((expiry) => {
 
     ws.on('close', () => {
         console.log('Connection closed');
+        process.exit(1);
     });
 
     ws.on('error', (error) => {
         console.error(`WebSocket error: ${error.message} ${error}`);
+        process.exit(1);
     });
 
     // To send a message after the connection is established (you can do this anytime)
