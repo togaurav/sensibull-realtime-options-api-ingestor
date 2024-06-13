@@ -1,10 +1,24 @@
 version: '3'
+
+x-defaults: &default-app
+  network_mode: host
+  logging:
+    driver: "json-file"
+    options:
+      max-size: "2M"
+  restart: "always"
+  deploy:
+    resources:
+      limits:
+        memory: "1g"
+
 services:
   realtime-data:
+    <<: *default-app
     build: ./realtime-data
+    container_name: sensibull-realtime
     volumes:
       - ./.data:/usr/app/scrapped_data
-    restart: always
     environment:
       TZ: 'Asia/Calcutta'
 
