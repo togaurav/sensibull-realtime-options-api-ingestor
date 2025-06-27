@@ -26,7 +26,6 @@ call_rabbitmq_setup();
 
 const WebSocket = require('ws');
 const lib = require('./lib.js');
-// Replace 'ws://your-websocket-server-url' with the actual WebSocket server URL
 const serverUrl = 'https://wsrelay.sensibull.com/broker/1?consumerType=platform_pro';
 
 
@@ -36,70 +35,50 @@ const customHeaders = {
     'Origin': 'https://web.sensibull.com'
 };
 
-var expiries = lib.expiries();
-
-expiries = [expiries.shift()]
-
-expiries.forEach((expiry) => {
-
-
-    const ws = new WebSocket(serverUrl, {
+const ws = new WebSocket(serverUrl, {
         headers: customHeaders
     });
 
     ws.on('open', () => {
-        // 14286351
         console.log('Connected to the WebSocket server');
-
-        let scrips = [];
-
-        const expiries = lib.expiries();
-
-        lib.instruments().forEach(i => {
-
-            scrips.push(
-                { "underlying": i, "expiry": expiry },
-
-            );
-
-        })
-
-
-        // scrips = [scrips.shift()];
-        // underlying-stats
-
-        // console.log(scrips);
-        let message = {
-            "msgCommand": "subscribe", "dataSource": "option-chain", "brokerId": 1, "tokens": [], "underlyingExpiry": scrips
-            , "uniqueId": ""
+        
+        const msg = {
+            "msgCommand": "subscribe",
+            "dataSource": "screener-stats",
+            "brokerId": 1,
+            "tokens": [],
+            "underlyingExpiry": [],
+            "uniqueId": ""
         };
 
-
-
-
-        // Debug
-
-        scrips = scrips.map(script=>script.underlying);
-        let msg = { "msgCommand": "subscribe", "dataSource": "underlying-stats", "brokerId": 1, "tokens": scrips, "underlyingExpiry": [], "uniqueId": "" };
-        // console.log(msg);
-
-        msg = JSON.stringify(msg);
-        ws.send(msg);
-
-
-
-
-
-
-
+        ws.send(JSON.stringify(msg));
+        console.log("Sent subscription request for screener-stats");
     });
 
     ws.on('message', (data) => {
-        // console.log(`Received: ${data}`);
-        let message = lib.decodeData(data);
-        console.log(message)
-        lib.print(message)
+        try {
+            const message = lib.decodeData(data);
 
+            // --- PING/PONG LOGIC ---
+            // Check if the decoded message is a PING packet from the server.
+            if (message.kind === lib.JR.CUSTOM_PING) {
+                console.log('Received PING from server. Sending PONG back.');
+                // The PONG message is a single byte with the value 254 (0xFE)
+                const pongMessage = Buffer.from([254]);
+                ws.send(pongMessage);
+                return; // Stop processing this PING message.
+            }
+            // --- END PING/PONG LOGIC ---
+
+            // If it's not a PING, process it as a regular data message.
+            console.log("Successfully decoded message:", message);
+            lib.print(message);
+            
+            sendData(JSON.stringify(message))
+        } catch (e) {
+            // Log the full error to see messages like "unexpected EOF"
+            console.error("Failed to decode message:", e);
+        }
     });
 
     ws.on('close', () => {
@@ -108,12 +87,6 @@ expiries.forEach((expiry) => {
     });
 
     ws.on('error', (error) => {
-        console.error(`WebSocket error: ${error.message} ${error}`);
+        console.error(`WebSocket error: ${error.message}`);
         process.exit(1);
     });
-
-    // To send a message after the connection is established (you can do this anytime)
-    // ws.send('Your message here
-
-
-})
